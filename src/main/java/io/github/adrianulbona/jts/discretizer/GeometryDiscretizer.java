@@ -13,8 +13,5 @@ import java.util.Set;
 @RequiredArgsConstructor
 public abstract class GeometryDiscretizer<G extends Geometry> {
 
-	@Getter
-	protected final int precision;
-
 	public abstract Set<GeoHash> discretize(G geometry);
 }

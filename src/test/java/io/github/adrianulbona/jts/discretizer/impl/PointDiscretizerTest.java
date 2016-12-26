@@ -2,14 +2,17 @@ package io.github.adrianulbona.jts.discretizer.impl;
 
 import ch.hsr.geohash.GeoHash;
 import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;
+import java.util.stream.Stream;
 
+import static java.util.stream.Collectors.toSet;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by adrianulbona on 26/12/2016.
@@ -18,31 +21,21 @@ class PointDiscretizerTest {
 
 	@Test
 	void discretizeNull() {
-		assertThrows(IllegalArgumentException.class, () -> new PointDiscretizer(5).discretize(null));
-	}
-
-	@Test
-	void discretizeOutOfRangeCoords() {
-		final GeometryFactory geometryFactory = new GeometryFactory();
-		final PointDiscretizer pointDiscretizer = new PointDiscretizer(5);
-		final Point latitudeTooSmall = geometryFactory.createPoint(new Coordinate(-91.0, 0.0));
-		final Point latitudeTooLarge = geometryFactory.createPoint(new Coordinate(91.0, 0.0));
-		final Point longitudeTooSmall = geometryFactory.createPoint(new Coordinate(0.0, -181.0));
-		final Point longitudeTooLarge = geometryFactory.createPoint(new Coordinate(0.0, 181.0));
-
-		assertThrows(IllegalArgumentException.class, () -> pointDiscretizer.discretize(latitudeTooSmall));
-		assertThrows(IllegalArgumentException.class, () -> pointDiscretizer.discretize(latitudeTooLarge));
-		assertThrows(IllegalArgumentException.class, () -> pointDiscretizer.discretize(longitudeTooSmall));
-		assertThrows(IllegalArgumentException.class, () -> pointDiscretizer.discretize(longitudeTooLarge));
+		assertThrows(IllegalArgumentException.class,
+				() -> new PointDiscretizer(mock(CoordinateDiscretizer.class)).discretize(null));
 	}
 
 	@Test
 	void discretize() {
-		final Point zerozero = new GeometryFactory().createPoint(new Coordinate(0.0, 0.0));
-		final Set<GeoHash> geoHashes = new PointDiscretizer(5).discretize(zerozero);
-		assertEquals(1, geoHashes.size());
-		assertEquals(GeoHash.fromGeohashString("s0000"), geoHashes.stream()
-				.findFirst()
-				.orElseThrow(AssertionError::new));
+		final Coordinate coordinate = mock(Coordinate.class);
+		final Point point = mock(Point.class);
+		when(point.getCoordinate()).thenReturn(coordinate);
+		final CoordinateDiscretizer coordinateDiscretizer = mock(CoordinateDiscretizer.class);
+		final GeoHash geoHash = GeoHash.fromGeohashString("u33");
+		when(coordinateDiscretizer.discretize(coordinate)).thenReturn(geoHash);
+		final Set<GeoHash> discretization = new PointDiscretizer(coordinateDiscretizer).discretize(point);
+		assertEquals(1, discretization.size());
+		assertEquals(Stream.of(geoHash)
+				.collect(toSet()), discretization);
 	}
 }
