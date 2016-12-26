@@ -2,7 +2,6 @@ package io.github.adrianulbona.jts.discretizer;
 
 import ch.hsr.geohash.GeoHash;
 import com.vividsolutions.jts.geom.Geometry;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Set;
