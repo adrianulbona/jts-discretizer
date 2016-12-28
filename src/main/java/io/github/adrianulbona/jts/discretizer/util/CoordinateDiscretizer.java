@@ -1,4 +1,4 @@
-package io.github.adrianulbona.jts.discretizer.geometry;
+package io.github.adrianulbona.jts.discretizer.util;
 
 import ch.hsr.geohash.GeoHash;
 import ch.hsr.geohash.WGS84Point;

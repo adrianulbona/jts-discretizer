@@ -3,6 +3,7 @@ package io.github.adrianulbona.jts.discretizer.geometry;
 import ch.hsr.geohash.GeoHash;
 import com.vividsolutions.jts.geom.MultiPoint;
 import io.github.adrianulbona.jts.discretizer.GeometryDiscretizer;
+import io.github.adrianulbona.jts.discretizer.util.CoordinateDiscretizer;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 

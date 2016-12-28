@@ -5,10 +5,7 @@ import ch.hsr.geohash.WGS84Point;
 import com.vividsolutions.jts.geom.*;
 import com.vividsolutions.jts.io.ParseException;
 import com.vividsolutions.jts.io.WKTWriter;
-import io.github.adrianulbona.jts.discretizer.util.Coordinate2WGS84Point;
-import io.github.adrianulbona.jts.discretizer.util.GeoHash2Geometry;
-import io.github.adrianulbona.jts.discretizer.util.SegmentDiscretizer;
-import io.github.adrianulbona.jts.discretizer.util.WGS84Point2Coordinate;
+import io.github.adrianulbona.jts.discretizer.util.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

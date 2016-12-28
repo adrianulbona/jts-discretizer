@@ -3,6 +3,7 @@ package io.github.adrianulbona.jts.discretizer.geometry;
 import ch.hsr.geohash.GeoHash;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Point;
+import io.github.adrianulbona.jts.discretizer.util.CoordinateDiscretizer;
 import org.junit.jupiter.api.Test;
 
 import java.util.Set;

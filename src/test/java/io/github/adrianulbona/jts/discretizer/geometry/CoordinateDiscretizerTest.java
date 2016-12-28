@@ -4,6 +4,7 @@ import ch.hsr.geohash.GeoHash;
 import ch.hsr.geohash.WGS84Point;
 import com.vividsolutions.jts.geom.Coordinate;
 import io.github.adrianulbona.jts.discretizer.util.Coordinate2WGS84Point;
+import io.github.adrianulbona.jts.discretizer.util.CoordinateDiscretizer;
 import io.github.adrianulbona.jts.discretizer.util.WGS84Point2Coordinate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
