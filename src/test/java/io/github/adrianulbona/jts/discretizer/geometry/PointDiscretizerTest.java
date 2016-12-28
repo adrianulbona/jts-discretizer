@@ -1,4 +1,4 @@
-package io.github.adrianulbona.jts.discretizer.impl;
+package io.github.adrianulbona.jts.discretizer.geometry;
 
 import ch.hsr.geohash.GeoHash;
 import com.vividsolutions.jts.geom.Coordinate;
