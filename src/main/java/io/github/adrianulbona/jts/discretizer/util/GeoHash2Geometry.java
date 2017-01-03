@@ -10,23 +10,23 @@ import com.vividsolutions.jts.geom.MultiPoint;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
  * Created by adrianulbona on 27/12/2016.
  */
 @RequiredArgsConstructor
-public class GeoHash2Geometry implements Function<GeoHash, Geometry> {
+public class GeoHash2Geometry implements BiFunction<GeoHash, GeometryFactory, Geometry> {
 
 	private final Function<WGS84Point, Coordinate> WGS84Point2coordinate;
-	private final GeometryFactory geometryFactory;
 
 	@Override
-	public Geometry apply(@NonNull GeoHash geoHash) {
+	public Geometry apply(@NonNull GeoHash geoHash, @NonNull GeometryFactory geometryFactory) {
 		final BoundingBox boundingBox = geoHash.getBoundingBox();
 		final Coordinate upperLeft = this.WGS84Point2coordinate.apply(boundingBox.getUpperLeft());
 		final Coordinate lowerRight = this.WGS84Point2coordinate.apply(boundingBox.getLowerRight());
-		final MultiPoint multiPoint = this.geometryFactory.createMultiPoint(new Coordinate[]{upperLeft, lowerRight});
+		final MultiPoint multiPoint = geometryFactory.createMultiPoint(new Coordinate[]{upperLeft, lowerRight});
 		return multiPoint.getEnvelope();
 	}
 }

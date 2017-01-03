@@ -20,25 +20,27 @@ import static java.util.stream.Collectors.toSet;
  * Created by adrianulbona on 27/12/2016.
  */
 @RequiredArgsConstructor
-public class SegmentDiscretizer implements BiFunction<Coordinate, Coordinate, Set<GeoHash>> {
+public class SegmentDiscretizer implements BiFunction<LineString, Integer, Set<GeoHash>> {
 
-	private final CoordinateDiscretizer coordinateDiscretizer;
-	private final Function<GeoHash, Geometry> geoHash2Geometry;
-	private final GeometryFactory geometryFactory;
+	private final BiFunction<Coordinate, Integer, GeoHash> coordinateDiscretizer;
+	private final BiFunction<GeoHash, GeometryFactory, Geometry> geoHash2Geometry;
 
 	@Override
-	public Set<GeoHash> apply(@NonNull Coordinate start, @NonNull Coordinate stop) {
-		final LineString lineSegmentGeometry = this.geometryFactory.createLineString(new Coordinate[]{start, stop});
-		final GeoHash destination = this.coordinateDiscretizer.discretize(stop);
+	public Set<GeoHash> apply(@NonNull LineString segment, @NonNull Integer precision) {
+		if (segment.getNumPoints() != 2) {
+			throw new IllegalArgumentException();
+		}
+		final GeoHash destination = this.coordinateDiscretizer.apply(segment.getCoordinateN(1), precision);
 		final Set<GeoHash> accumulator = new HashSet<>();
-		Set<GeoHash> seed = Stream.of(this.coordinateDiscretizer.discretize(start))
+		Set<GeoHash> seed = Stream.of(this.coordinateDiscretizer.apply(segment.getCoordinateN(0), precision))
 				.collect(toSet());
 		while (!accumulator.contains(destination)) {
 			accumulator.addAll(seed);
 			seed = seed.stream()
 					.flatMap(geoHash -> Stream.of(geoHash.getAdjacent()))
 					.distinct()
-					.filter(geoHash -> this.geoHash2Geometry.apply(geoHash).intersects(lineSegmentGeometry))
+					.filter(geoHash -> this.geoHash2Geometry.apply(geoHash, segment.getFactory())
+							.intersects(segment))
 					.collect(toSet());
 		}
 		return accumulator;

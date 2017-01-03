@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
 
 /**
  * Created by adrianulbona on 26/12/2016.
@@ -23,18 +24,19 @@ class CoordinateDiscretizerTest {
 	@BeforeEach
 	void setup() {
 		this.wgs84Point2Coordinate = new WGS84Point2Coordinate();
-		this.discretizer = new CoordinateDiscretizer(new Coordinate2WGS84Point(), 5);
+		this.discretizer = new CoordinateDiscretizer(new Coordinate2WGS84Point());
 	}
 
 	@Test
 	void discretizeNull() {
-		assertThrows(IllegalArgumentException.class, () -> this.discretizer.discretize(null));
+		assertThrows(IllegalArgumentException.class, () -> this.discretizer.apply(null, 1));
+		assertThrows(IllegalArgumentException.class, () -> this.discretizer.apply(mock(Coordinate.class), null));
 	}
 
 	@Test
 	void discretize() {
 		final WGS84Point origin = new WGS84Point(0.0, 0.0);
 		final Coordinate coordinate = this.wgs84Point2Coordinate.apply(origin);
-		assertEquals(GeoHash.fromGeohashString("s0000"), this.discretizer.discretize(coordinate));
+		assertEquals(GeoHash.fromGeohashString("s0000"), this.discretizer.apply(coordinate, 5));
 	}
 }

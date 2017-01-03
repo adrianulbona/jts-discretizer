@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
 
 /**
  * Created by adrianulbona on 27/12/2016.
@@ -18,17 +19,21 @@ class GeoHash2GeometryTest {
 
 	@BeforeEach
 	void setUp() {
-		this.geoHash2Geometry = new GeoHash2Geometry(new WGS84Point2Coordinate(), new GeometryFactory());
+		this.geoHash2Geometry = new GeoHash2Geometry(new WGS84Point2Coordinate());
 	}
 
 	@Test
 	void applyNull() {
-		assertThrows(IllegalArgumentException.class, () -> this.geoHash2Geometry.apply(null));
+		assertThrows(IllegalArgumentException.class,
+				() -> this.geoHash2Geometry.apply(null, mock(GeometryFactory.class)));
+		assertThrows(IllegalArgumentException.class,
+				() -> this.geoHash2Geometry.apply(GeoHash.fromGeohashString("s"), null));
 	}
 
 	@Test
 	void apply() {
-		final Geometry u33Geometry = this.geoHash2Geometry.apply(GeoHash.fromGeohashString("u33"));
+		final Geometry u33Geometry = this.geoHash2Geometry.apply(GeoHash.fromGeohashString("u33"),
+				new GeometryFactory());
 		assertEquals(u33Geometry.getEnvelope(), u33Geometry);
 	}
 }

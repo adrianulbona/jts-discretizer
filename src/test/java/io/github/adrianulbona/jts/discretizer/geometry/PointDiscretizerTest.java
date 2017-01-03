@@ -2,6 +2,7 @@ package io.github.adrianulbona.jts.discretizer.geometry;
 
 import ch.hsr.geohash.GeoHash;
 import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Point;
 import io.github.adrianulbona.jts.discretizer.util.CoordinateDiscretizer;
 import org.junit.jupiter.api.Test;
@@ -23,7 +24,9 @@ class PointDiscretizerTest {
 	@Test
 	void discretizeNull() {
 		assertThrows(IllegalArgumentException.class,
-				() -> new PointDiscretizer(mock(CoordinateDiscretizer.class)).discretize(null));
+				() -> new PointDiscretizer(mock(CoordinateDiscretizer.class)).apply(mock(Point.class), null));
+		assertThrows(IllegalArgumentException.class,
+				() -> new PointDiscretizer(mock(CoordinateDiscretizer.class)).apply(null, 2));
 	}
 
 	@Test
@@ -33,10 +36,10 @@ class PointDiscretizerTest {
 		when(point.getCoordinate()).thenReturn(coordinate);
 		final CoordinateDiscretizer coordinateDiscretizer = mock(CoordinateDiscretizer.class);
 		final GeoHash geoHash = GeoHash.fromGeohashString("u33");
-		when(coordinateDiscretizer.discretize(coordinate)).thenReturn(geoHash);
-		final Set<GeoHash> discretization = new PointDiscretizer(coordinateDiscretizer).discretize(point);
-		assertEquals(1, discretization.size());
+		when(coordinateDiscretizer.apply(coordinate, 3)).thenReturn(geoHash);
+		final Set<GeoHash> geoHashes = new PointDiscretizer(coordinateDiscretizer).apply(point, 3);
+		assertEquals(1, geoHashes.size());
 		assertEquals(Stream.of(geoHash)
-				.collect(toSet()), discretization);
+				.collect(toSet()), geoHashes);
 	}
 }

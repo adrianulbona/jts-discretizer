@@ -9,6 +9,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Set;
+import java.util.function.BiFunction;
 
 import static java.util.stream.Collectors.toSet;
 import static java.util.stream.IntStream.range;
@@ -17,19 +18,24 @@ import static java.util.stream.IntStream.range;
  * Created by adrianulbona on 26/12/2016.
  */
 @RequiredArgsConstructor
-public class LineStringDiscretizer extends GeometryDiscretizer<LineString> {
+public class LineStringDiscretizer implements GeometryDiscretizer<LineString> {
 
-	private final SegmentDiscretizer segmentDiscretizer;
+	private final BiFunction<LineString, Integer, Set<GeoHash>> segmentDiscretizer;
 
 	@Override
-	public Set<GeoHash> discretize(@NonNull LineString geometry) {
+	public Set<GeoHash> apply(@NonNull LineString geometry, @NonNull Integer precision) {
 		final Coordinate[] coordinates = geometry.getCoordinates();
 		if (coordinates.length < 2) {
 			throw new IllegalArgumentException();
 		}
 
 		return range(1, coordinates.length).mapToObj(
-				index -> this.segmentDiscretizer.apply(coordinates[index - 1], coordinates[index]))
+				index -> {
+					final Coordinate start = coordinates[index - 1];
+					final Coordinate end = coordinates[index];
+					final LineString segment = geometry.getFactory().createLineString(new Coordinate[]{start, end});
+					return this.segmentDiscretizer.apply(segment, precision);
+				})
 				.flatMap(Set::stream)
 				.collect(toSet());
 	}
