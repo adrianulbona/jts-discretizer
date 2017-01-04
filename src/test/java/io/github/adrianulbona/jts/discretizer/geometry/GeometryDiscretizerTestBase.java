@@ -3,6 +3,10 @@ package io.github.adrianulbona.jts.discretizer.geometry;
 import ch.hsr.geohash.GeoHash;
 import ch.hsr.geohash.WGS84Point;
 import com.vividsolutions.jts.geom.*;
+import com.vividsolutions.jts.io.ParseException;
+import com.vividsolutions.jts.io.WKTReader;
+import com.vividsolutions.jts.io.WKTWriter;
+import io.github.adrianulbona.jts.discretizer.util.GeoHash2Geometry;
 import io.github.adrianulbona.jts.discretizer.util.WGS84Point2Coordinate;
 
 import java.util.Set;
@@ -54,6 +58,20 @@ public class GeometryDiscretizerTestBase {
 		return this.geometryFactory.createLineString(new Coordinate[]{c4(), c5(), c6()});
 	}
 
+	protected Stream<String> discretizedPolygonCluj5() {
+		return Stream.of("u82f3", "u82f2", "u82dp", "u82f1", "u82f0", "u82c8", "u82f6", "u82f5",
+				"u82f4", "u829z", "u82c9", "u82cg", "u82cf", "u82cc", "u82cb");
+	}
+
+	protected Polygon polygonCluj() throws ParseException {
+		return (Polygon) new WKTReader().read(
+				"POLYGON((23.527908325195312 46.78519970334831,23.5272216796875 46.71886484380867,23.624725341796875 46.70615310945258,23.68927001953125 46.75698208294664,23.678970336914062 46.79648261213551,23.637771606445312 46.82843800916944,23.527908325195312 46.78519970334831))");
+	}
+
+	protected MultiPolygon multiPolygonCluj() throws ParseException {
+		return this.geometryFactory.createMultiPolygon(new Polygon[]{polygonCluj()});
+	}
+
 	protected Point point(Coordinate coordinate) {
 		return this.geometryFactory.createPoint(coordinate);
 	}
@@ -84,5 +102,22 @@ public class GeometryDiscretizerTestBase {
 
 	private Coordinate coordinate(WGS84Point wgs84Point) {
 		return this.wgs84Point2Coordinate.apply(wgs84Point);
+	}
+
+	protected void printDebugWKT(Set<GeoHash> geoHashes) {
+		final Set<Polygon> geometries = geoHashes
+				.stream()
+				.map(geoHash -> (Polygon) new GeoHash2Geometry(new WGS84Point2Coordinate()).apply(
+						geoHash, new GeometryFactory()))
+				.collect(toSet());
+		System.out.println(geoHashes.stream()
+				.map(GeoHash::toBase32)
+				.map(hash -> "\"" + hash + "\"")
+				.collect(toSet()));
+		final Polygon[] polygons = geometries.toArray(new Polygon[geometries.size()]);
+		final MultiPolygon multiPolygon = new GeometryFactory().createMultiPolygon(polygons);
+
+		final WKTWriter wktWriter = new WKTWriter();
+		System.out.println(wktWriter.write(multiPolygon));
 	}
 }

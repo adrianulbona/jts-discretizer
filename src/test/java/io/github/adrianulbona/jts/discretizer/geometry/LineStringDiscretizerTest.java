@@ -56,22 +56,4 @@ class LineStringDiscretizerTest extends GeometryDiscretizerTestBase {
 
 		assertEquals(expected, geoHashes);
 	}
-
-	private void printDebugWKT(LineString lineString, Set<GeoHash> geoHashes) {
-		final Set<Polygon> geometries = geoHashes
-				.stream()
-				.map(geoHash -> (Polygon) new GeoHash2Geometry(this.wgs84Point2Coordinate).apply(
-						geoHash, new GeometryFactory()))
-				.collect(toSet());
-		System.out.println(geoHashes.stream()
-				.map(GeoHash::toBase32)
-				.map(hash -> "\"" + hash + "\"")
-				.collect(toSet()));
-		final Polygon[] polygons = geometries.toArray(new Polygon[geometries.size()]);
-		final MultiPolygon multiPolygon = this.geometryFactory.createMultiPolygon(polygons);
-
-		final WKTWriter wktWriter = new WKTWriter();
-		System.out.println(wktWriter.write(lineString));
-		System.out.println(wktWriter.write(multiPolygon));
-	}
 }
