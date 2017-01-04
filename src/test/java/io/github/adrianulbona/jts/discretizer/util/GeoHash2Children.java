@@ -15,6 +15,9 @@ import static java.util.stream.LongStream.range;
 public class GeoHash2Children {
 
 	public Set<GeoHash> children(@NonNull GeoHash geoHash) {
+		if (geoHash.getCharacterPrecision() == 12) {
+			throw new IllegalArgumentException();
+		}
 		final int shift = 64 - geoHash.significantBits() - 5;
 		final long base = geoHash.longValue() >> shift;
 		return range(0, 32).mapToObj(index -> (base + index) << shift)
