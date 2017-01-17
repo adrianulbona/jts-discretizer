@@ -8,7 +8,7 @@
     <artifactId>jts-discretizer</artifactId>
     <version>0.2.0-SNAPSHOT</version>
 
-    <name>jts-discretizer</name>
+    <name>JTS Discretizer</name>
     <description>Converters for JTS geometries to geohash sets</description>
     <url>https://github.com/adrianulbona/jts-discretizer</url>
 
