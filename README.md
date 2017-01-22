@@ -7,6 +7,7 @@
 This is a tiny Java 8 library able to convert [JTS](https://en.wikipedia.org/wiki/JTS_Topology_Suite) geometries to a set of [GeoHashes](https://en.wikipedia.org/wiki/Geohash) with arbitrary precision (<12). 
 
 A GeoHash-based Mallorca discretization looks like:
+
 ![alt tag](https://github.com/adrianulbona/jts-discretizer/raw/master/img/polygon.png)
 
 The precision used is 7 - notice that the GeoHash set is reduced if all children of a certain GeoHash are present.
